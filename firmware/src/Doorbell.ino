@@ -67,9 +67,9 @@ void loop()
   delay(500);
 
 
-//code=21
-//code=0b1000000000000 kornyeke (1000000010011)
-  for (code=0b1000000000000; code<=0b1111111111111; code++)
+//  for (code=0b1000000000000; code<=0b1111111111111; code++)
+//code=21; //Short chime
+	code=0b1000000010011; //Full chime
   {
     for (rep=0; rep<40; rep++)
     {
