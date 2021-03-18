@@ -1,43 +1,8 @@
 #include <avr/pgmspace.h>
-#include "code.h"
 
 #define TX_PIN 7
 #define BUTTON_PIN 2
 #define LED_PIN 13
-
-//#define PERIODIC
-
-//uint32_t t0;
-
-//400 -> 853
-//800 -> 854
-//1200 -> 891
-//1600 -> 892
-
-//typedef struct
-//{
-//  uint16_t len;
-//  uint8_t pol;
-//} pulse_t;
-//
-//#define BIT_0 {683, 0}, {341, 1}
-//#define BIT_1 {341, 0}, {683, 1}
-//pulse_t packet[]={  BIT_0,
-//                     BIT_0,
-//                     BIT_0,
-//                     BIT_0,
-//                     BIT_0,
-//                     BIT_0,
-//                     BIT_0,
-//                     BIT_0,
-//
-//                     BIT_1,
-//                     BIT_0,
-//                     BIT_0,
-//                     BIT_1,
-//                     BIT_1,
-//                     {10000,0},
-//                     {0,0}};
 
 void setup()
 {
@@ -49,29 +14,28 @@ void setup()
   Serial.begin(115200);
 }
 
-//void sendPulse(uint8_t hl, uint16_t t)
-//{
-//  digitalWrite(TX_PIN, hl);
-//  delayMicroseconds(t-(micros()-t0));
-//}
-
 void loop()
 {
-//  uint16_t nextPulse;
-//  uint8_t pulseCounter;
-  uint32_t code;
   int8_t pos;
   uint8_t rep;
 
   digitalWrite(LED_PIN, 0);
   delay(500);
 
+	uint32_t id=14;
+	uint32_t pattern;
 
-//  for (code=0b1000000000000; code<=0b1111111111111; code++)
-//code=21; //Short chime
-	code=0b1000000010011; //Full chime
-  {
-    for (rep=0; rep<40; rep++)
+	pattern=0b10011; //Full chime
+	//pattern=0b10101; //Short chime, ding-ding
+	//pattern=0b11001; //Short chime, ding-dong
+
+
+	uint32_t code=(id<<7) | pattern;
+	//code |= 0x1000; //First bit can be set to 0 or 1 (ignored)
+
+//  for (code=0b0011110000000; code<=0b1111111111111; code++)
+//  {
+    for (rep=0; rep<100; rep++)
     {
       for (pos=12; pos>=0; pos--)
       {
@@ -79,27 +43,29 @@ void loop()
         {
           digitalWrite(LED_PIN, 1);
           digitalWrite(TX_PIN, 0);
-          delayMicroseconds(300);
+          delayMicroseconds(338);
           digitalWrite(TX_PIN, 1);
-          delayMicroseconds(600);
+          delayMicroseconds(675);
         }
         else
         {
           digitalWrite(LED_PIN, 0);
           digitalWrite(TX_PIN, 0);
-          delayMicroseconds(600);
+          delayMicroseconds(675);
           digitalWrite(TX_PIN, 1);
-          delayMicroseconds(300);
+          delayMicroseconds(338);
         }
       }
       digitalWrite(TX_PIN, 0);
       digitalWrite(LED_PIN, 0);
       Serial.print(code, BIN);
       Serial.print("\n");
-      delayMicroseconds(2000);
+      delayMicroseconds(11084);
     }
-  }
+//  }
   digitalWrite(TX_PIN, 0);
   digitalWrite(LED_PIN, 0);
-  while(1);
+	//code^=0b0110000000000;
+	delay(10000);
+  //while(1);
 }
